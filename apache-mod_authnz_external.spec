@@ -23,7 +23,6 @@ Requires:	apache >= %{apache_version}
 BuildRequires:  apache-devel >= %{apache_version}
 Provides:	apache-mod_auth_external
 Obsoletes:	apache-mod_auth_external
-BuildRoot:	%{_tmppath}/%{name}-%{version}-buildroot
 
 %description
 An apache external authentication module - uses PAM.
