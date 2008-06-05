@@ -7,7 +7,7 @@
 Summary:	An apache authentication DSO using external programs
 Name:		apache-%{mod_name}
 Version:	3.1.0
-Release:	%mkrel 9
+Release:	%mkrel 10
 Group:		System/Servers
 License:	Apache License
 URL:		http://www.unixpapa.com/mod_auth_external.html
@@ -23,7 +23,7 @@ Requires:	apache >= %{apache_version}
 BuildRequires:  apache-devel >= %{apache_version}
 Provides:	apache-mod_auth_external
 Obsoletes:	apache-mod_auth_external
-BuildRoot:	%{_tmppath}/%{name}-%{version}-buildroot
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 An apache external authentication module - uses PAM.
