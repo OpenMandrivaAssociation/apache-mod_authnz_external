@@ -6,12 +6,12 @@
 
 Summary:	An apache authentication DSO using external programs
 Name:		apache-%{mod_name}
-Version:	3.1.0
-Release:	%mkrel 11
+Version:	3.2.1
+Release:	%mkrel 1
 Group:		System/Servers
 License:	Apache License
 URL:		http://www.unixpapa.com/mod_auth_external.html
-Source0:	http://www.unixpapa.com/software/%{mod_name}-%{version}.tar.bz2
+Source0:	http://www.unixpapa.com/software/%{mod_name}-%{version}.tar.gz
 Source1:	%{mod_conf}
 Requires:	pwauth
 Requires(pre): rpm-helper
