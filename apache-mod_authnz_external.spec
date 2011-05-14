@@ -7,7 +7,7 @@
 Summary:	An apache authentication DSO using external programs
 Name:		apache-%{mod_name}
 Version:	3.2.5
-Release:	%mkrel 4
+Release:	%mkrel 5
 Group:		System/Servers
 License:	Apache License
 URL:		http://www.unixpapa.com/mod_auth_external.html
