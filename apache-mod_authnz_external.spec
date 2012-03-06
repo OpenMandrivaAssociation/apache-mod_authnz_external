@@ -1,29 +1,21 @@
 #Module-Specific definitions
-%define apache_version 2.2.4
+%define apache_version 2.4.0
 %define mod_name mod_authnz_external
-%define mod_conf 10_%{mod_name}.conf
-%define mod_so %{mod_name}.so
+%define load_order 150
 
 Summary:	An apache authentication DSO using external programs
 Name:		apache-%{mod_name}
-Version:	3.2.5
-Release:	%mkrel 6
+Version:	3.3.1
+Release:	1
 Group:		System/Servers
 License:	Apache License
-URL:		http://www.unixpapa.com/mod_auth_external.html
+URL:		http://code.google.com/p/mod-auth-external/
 Source0:	http://mod-auth-external.googlecode.com/files/%{mod_name}-%{version}.tar.gz
-Source1:	%{mod_conf}
 Requires:	pwauth
 Requires(pre): rpm-helper
 Requires(postun): rpm-helper
-Requires(pre):  apache-conf >= %{apache_version}
-Requires(pre):  apache >= %{apache_version}
-Requires:	apache-conf >= %{apache_version}
 Requires:	apache >= %{apache_version}
 BuildRequires:  apache-devel >= %{apache_version}
-Provides:	apache-mod_auth_external
-Obsoletes:	apache-mod_auth_external
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 An apache external authentication module - uses PAM.
@@ -32,39 +24,35 @@ An apache external authentication module - uses PAM.
 
 %setup -q -n %{mod_name}-%{version}
 
-cp %{SOURCE1} %{mod_conf}
-chmod 644 AUTHENTICATORS CHANGES INSTALL* README TODO
+chmod 644 AUTHENTICATORS CHANGES INSTALL* README TODO UPGRADE
 
 %build
 
-%{_sbindir}/apxs -c %{mod_name}.c
+apxs -c %{mod_name}.c
 
 %install
-[ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
 
-install -d %{buildroot}%{_libdir}/apache-extramodules
+install -d %{buildroot}%{_libdir}/apache
 install -d %{buildroot}%{_sysconfdir}/httpd/modules.d
 
-install -m0755 .libs/*.so %{buildroot}%{_libdir}/apache-extramodules/
-install -m0644 %{mod_conf} %{buildroot}%{_sysconfdir}/httpd/modules.d/%{mod_conf}
+install -m0755 .libs/*.so %{buildroot}%{_libdir}/apache/
+
+cat > %{buildroot}%{_sysconfdir}/httpd/modules.d/%{load_order}_%{mod_name}.conf << EOF
+LoadModule authnz_external_module %{_libdir}/%{mod_name}.so
+
+AddExternalAuth pwauth %{_bindir}/pwauth
+SetExternalAuthMethod pwauth pipe
+EOF
 
 %post
-if [ -f %{_var}/lock/subsys/httpd ]; then
-    %{_initrddir}/httpd restart 1>&2;
-fi
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
 
 %postun
 if [ "$1" = "0" ]; then
-    if [ -f %{_var}/lock/subsys/httpd ]; then
-        %{_initrddir}/httpd restart 1>&2
-    fi
+    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
 fi
 
-%clean
-[ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
-
 %files
-%defattr(-,root,root)
 %doc AUTHENTICATORS CHANGES INSTALL* README TODO UPGRADE
-%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/httpd/modules.d/%{mod_conf}
-%attr(0755,root,root) %{_libdir}/apache-extramodules/%{mod_so}
+%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/httpd/modules.d/*.conf
+%attr(0755,root,root) %{_libdir}/apache/*.so
