@@ -6,11 +6,12 @@
 Summary:	An apache authentication DSO using external programs
 Name:		apache-%{mod_name}
 Version:	3.3.1
-Release:	1
+Release:	2
 Group:		System/Servers
 License:	Apache License
 URL:		http://code.google.com/p/mod-auth-external/
 Source0:	http://mod-auth-external.googlecode.com/files/%{mod_name}-%{version}.tar.gz
+Patch0:		mod_authnz_external-3.3.1-apache241.diff
 Requires:	pwauth
 Requires(pre): rpm-helper
 Requires(postun): rpm-helper
@@ -23,6 +24,7 @@ An apache external authentication module - uses PAM.
 %prep
 
 %setup -q -n %{mod_name}-%{version}
+%patch0 -p0
 
 chmod 644 AUTHENTICATORS CHANGES INSTALL* README TODO UPGRADE
 
@@ -38,7 +40,7 @@ install -d %{buildroot}%{_sysconfdir}/httpd/modules.d
 install -m0755 .libs/*.so %{buildroot}%{_libdir}/apache/
 
 cat > %{buildroot}%{_sysconfdir}/httpd/modules.d/%{load_order}_%{mod_name}.conf << EOF
-LoadModule authnz_external_module %{_libdir}/%{mod_name}.so
+LoadModule authnz_external_module %{_libdir}/apache/%{mod_name}.so
 
 AddExternalAuth pwauth %{_bindir}/pwauth
 SetExternalAuthMethod pwauth pipe
