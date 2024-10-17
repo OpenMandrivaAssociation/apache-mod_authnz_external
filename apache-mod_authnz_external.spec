@@ -10,7 +10,7 @@ Version:	3.3.0
 Release:	11
 Group:		System/Servers
 License:	Apache License
-URL:		http://www.unixpapa.com/mod_auth_external.html
+URL:		https://www.unixpapa.com/mod_auth_external.html
 Source0:	http://mod-auth-external.googlecode.com/files/%{mod_name}-%{version}.tar.gz
 Source1:	%{mod_conf}
 Patch0:		mod_authnz_external-3.2.5.patch
